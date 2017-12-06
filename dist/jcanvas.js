@@ -2251,9 +2251,12 @@ function _createEvent(eventName) {
 		touchEventName = _getTouchEventName(helperEventName);
 
 		function eventCallback(event) {
-			// Cache current mouse position and redraw layers
-			eventCache.x = event.offsetX;
-			eventCache.y = event.offsetY;
+      // Check if the canvas element has transform: scale(X) and fix mouse events accordingly
+      var scale = 1, cnvsTransform = $canvas[0].style.transform;
+      if(cnvsTransform) {scale = 1 / (/\(([^)]+)\)/.exec(cnvsTransform)[1]);}
+      // Cache current mouse position and redraw layers
+      eventCache.x = event.offsetX * scale;
+			eventCache.y = event.offsetY * scale;
 			eventCache.type = helperEventName;
 			eventCache.event = event;
 			// Redraw layers on every trigger of the event; don't redraw if at
